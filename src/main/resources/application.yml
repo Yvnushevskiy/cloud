@@ -1,30 +1,18 @@
 spring:
-  session:
-    timeout: 5m
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      timeout: 5m
-
-
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
-
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: true
 
-
-
-
-
   liquibase:
       enabled: true
       change-log: classpath:/db/changelog/db.changelog-master.yml
-
+  cache:
+    redis:
+      time-to-live: 31s

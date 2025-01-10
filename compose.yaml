@@ -12,7 +12,7 @@ services:
       - backend
 
   redis:
-    image: redis/redis-stack:latest
+    image: redis:latest
     container_name: redis
     ports:
       - '6379:6379'
