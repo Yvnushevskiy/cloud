@@ -2,6 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.model.AppUser;
 import com.example.demo.repository.UserRepository;
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.crypto.password.PasswordEncoder;

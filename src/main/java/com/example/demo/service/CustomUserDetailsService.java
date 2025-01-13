@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    final UserRepository userRepository; // add final if it doesn't work. Tell it to Stepa if works wo it
+    final UserRepository userRepository;
 
 
     @Override

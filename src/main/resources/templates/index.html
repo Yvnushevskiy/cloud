@@ -34,6 +34,24 @@
             <button class="btn btn-outline-success">Search</button>
             </form>
         </div>
+        <div class="file-upload my-4">
+            <h5>Upload a File</h5>
+            <form action="/error" method="post" enctype="multipart/form-data">
+                <div class="input-group">
+                    <input class="form-control" type="file" id="file" name="file" required>
+                </div>
+                <button class="btn btn-outline-primary mt-2">Upload</button>
+            </form>
+        </div>
+        <div class="file-upload my-4">
+            <h5>Upload a Folder</h5>
+            <form action="/error" method="post" enctype="multipart/form-data">
+                <div class="input-group">
+                    <input class="form-control" type="file" id="folder" name="folder" webkitdirectory  required>
+                </div>
+                <button class="btn btn-outline-primary mt-2">Upload</button>
+            </form>
+        </div>
 
     </div>
 
@@ -41,7 +59,7 @@
 
 <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-4 border-top">
     <div class="px-4">
-        <span>© Weather Viewer, project from <a href="https://zhukovsd.github.io/java-backend-learning-course/">zhukovsd/java-backend-learning-course</a> roadmap.</span>
+        <span>© Cloud storage , project from <a href="https://zhukovsd.github.io/java-backend-learning-course/">zhukovsd/java-backend-learning-course</a> roadmap.</span>
     </div>
 </footer>
 

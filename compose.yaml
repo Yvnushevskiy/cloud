@@ -28,6 +28,18 @@ services:
       - '8081:80'
     networks:
       - backend
+  minio:
+    image: quay.io/minio/minio:RELEASE.2022-02-18T01-50-10Z
+    volumes:
+      - ./data:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
+    env_file:
+      - .env
+    networks:
+      - backend
+    command: minio server /data
 
 networks:
   backend:

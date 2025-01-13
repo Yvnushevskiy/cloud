@@ -16,10 +16,8 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error",required = false)String error) {
-        if(error != null) {
-            return "sign-in-with-errors";
-        }
-        return "sign-in";
+        return error!=null ? "sign-in-with-errors":"sign-in";
+
     }
 
     @PostMapping("/register")
@@ -31,9 +29,6 @@ public class LoginController {
 
     @GetMapping("/register")
     public String registerPage(@RequestParam(value = "error",required = false)String error) {
-        if(error != null) {
-            return "sign-up-with-errors";
-        }
-        return "sign-up";
+        return error != null ? "sign-up-with-errors":"sign-up";
     }
 }
