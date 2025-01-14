@@ -29,7 +29,7 @@ services:
     networks:
       - backend
   minio:
-    image: quay.io/minio/minio:RELEASE.2022-02-18T01-50-10Z
+    image: minio/minio:latest
     volumes:
       - ./data:/data
     ports:
@@ -39,7 +39,7 @@ services:
       - .env
     networks:
       - backend
-    command: minio server /data
+    command:  server --console-address ":9001" /data
 
 networks:
   backend:

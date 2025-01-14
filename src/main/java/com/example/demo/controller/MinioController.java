@@ -26,7 +26,7 @@ public class MinioController {
 
 
     @PostMapping("/upload")
-    public void uploadFile(Authentication authentication, Model model,@RequestParam MultipartFile file) throws Exception {
+    public void uploadFile(Authentication authentication, Model model,@RequestParam MultipartFile file){
         model.addAttribute("username", authentication.getName());
         minioService.uploadFile(file);
     }

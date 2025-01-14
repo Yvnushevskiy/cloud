@@ -17,17 +17,20 @@ public class MinioService {
     private final MinioClient minioClient;
     private final String bucketName = "user-bucket";
 
-    public void uploadFile(MultipartFile file) throws Exception {
+    public void uploadFile(MultipartFile file) {
+        try {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(file.getName())
+                            .stream(file.getInputStream(), file.getSize(), -1)
+                            .contentType(file.getContentType())
+                            .build());
+                    file.getInputStream().close();
+        } catch (Exception e) {
 
-        MinioFile minioFile = fromMultipartFileToMinioFile(file);
-        minioClient.putObject(
-                PutObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(minioFile.getFileName())
-                        .stream(minioFile.getInputStream(), minioFile.getSize(), -1)
-                        .contentType(minioFile.getContentType())
-                        .build());
-
+            throw new RuntimeException(e);
+        }
     }
 
 
