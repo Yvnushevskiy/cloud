@@ -26,19 +26,11 @@ public class MinioController {
 
 
     @PostMapping("/upload")
-    public void uploadFile(Authentication authentication, Model model,@RequestParam MultipartFile file){
+    public void uploadFile(Authentication authentication, Model model,@RequestParam("file") MultipartFile file){
         model.addAttribute("username", authentication.getName());
         minioService.uploadFile(file);
     }
 
-
-
-
-
-//    @PostMapping
-//    public void loadFile(Authentication authentication, Model model,@RequestParam MultipartFile file) {
-//        minioService.XuyatinaPolnaya("aga",file.getInputStream(),file.getOriginalFilename());
-//    }
 }
 
 

@@ -5,6 +5,8 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,20 +17,18 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class MinioService {
     private final MinioClient minioClient;
-    private final String bucketName = "user-bucket";
+    private final Environment environment;
 
     public void uploadFile(MultipartFile file) {
-        try {
+        try (InputStream inputStream = file.getInputStream()) {
             minioClient.putObject(
                     PutObjectArgs.builder()
-                            .bucket(bucketName)
+                            .bucket(environment.getProperty("MINIO_BUCKET_NAME"))
                             .object(file.getName())
-                            .stream(file.getInputStream(), file.getSize(), -1)
+                            .stream(inputStream, file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build());
-                    file.getInputStream().close();
         } catch (Exception e) {
-
             throw new RuntimeException(e);
         }
     }

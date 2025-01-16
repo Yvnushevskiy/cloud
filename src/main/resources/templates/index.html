@@ -13,7 +13,6 @@
         <div class="d-flex align-items-center">
             <span class="navbar-text me-3" th:text="${username}"></span>
             <form action ="/logout" method="post">
-                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
             <button type = "submit" class="btn btn-outline-danger">Sign out</button>
             </form>
         </div>
