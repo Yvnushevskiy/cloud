@@ -12,7 +12,6 @@ public class MinioConfig {
 
     private final Environment environment;
 
-
     @Bean
     public MinioClient MinioClientBuilder() {
         return MinioClient.builder()

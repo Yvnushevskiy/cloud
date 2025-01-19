@@ -15,9 +15,6 @@ public class MinioBucketBuilder {
     private final MinioClient minioClient;
     private final Environment env;
 
-
-
-
     @PostConstruct
     public void minioBucketBuilder()  {
         try {

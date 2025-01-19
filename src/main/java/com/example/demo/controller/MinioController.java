@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.config.MinioConfig;
 import com.example.demo.model.FileObject;
 import com.example.demo.service.MinioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -13,18 +14,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
+@RequiredArgsConstructor
 public class MinioController {
 
-    @Autowired
-    private MinioService minioService;
+
+    private final MinioService minioService;
 
 
     @GetMapping("/home")
-    public String addUser(Authentication authentication, Model model,@RequestParam(value="path",required = false) String path) {
+    public String homePage(Authentication authentication, Model model,@RequestParam(value="path",required = false) String path) {
         String username = authentication.getName();
-        if(path == null){   //todo move it to service
-            path = "";
-        }
         FileObject fObj = minioService.getFileObjectForUser(username,path);
         model.addAttribute("username", username);
         model.addAttribute("files", fObj.getFiles());

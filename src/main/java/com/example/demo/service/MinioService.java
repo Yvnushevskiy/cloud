@@ -60,6 +60,9 @@ public class MinioService {
 
     private  String minioUrlBuilder(String userFolder,String path) {
         try {
+            if(path==null) {
+                path="";
+            }
             return userFolder + "/" + URLDecoder.decode(path, "UTF-8");
         }catch (Exception e){
             throw new RuntimeException("cant decode"+ e);
