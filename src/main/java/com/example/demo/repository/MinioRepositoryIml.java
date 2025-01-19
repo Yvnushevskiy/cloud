@@ -9,6 +9,8 @@ import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 
@@ -49,7 +51,17 @@ public class MinioRepositoryIml implements MinioRepository {
     }
 
 
-    public void createFolder() {
+    public void createFolder(String path,String folderName) {
+        try {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(env.getProperty("MINIO_BUCKET_NAME"))
+                            .object(path+folderName+"/")
+                            .stream(new ByteArrayInputStream(new byte[0]), 0, -1)
+                            .build());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

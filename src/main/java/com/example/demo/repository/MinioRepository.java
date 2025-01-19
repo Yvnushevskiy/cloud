@@ -10,6 +10,6 @@ public interface MinioRepository {
     void loadFolder();
     void deleteFolder();
     void deleteFile();
-    void createFolder();
+    void createFolder(String path,String folderName);
     Iterable<Result<Item>> buildFileObjectByPath(String path);
 }
