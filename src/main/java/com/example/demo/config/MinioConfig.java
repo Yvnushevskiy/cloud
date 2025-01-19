@@ -1,18 +1,17 @@
 package com.example.demo.config;
 
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-@RequiredArgsConstructor
 @Configuration
+@RequiredArgsConstructor
 public class MinioConfig {
 
     private final Environment environment;
+
 
     @Bean
     public MinioClient MinioClientBuilder() {

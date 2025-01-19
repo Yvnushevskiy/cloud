@@ -15,25 +15,11 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
 @EnableCaching
 public class RedisConfig extends AbstractHttpSessionApplicationInitializer {
 
-
     @Bean
     @Primary
     public RedisConnectionFactory connectionFactory() {
         return new LettuceConnectionFactory("localhost", 6379);
     }
-
-//
-//    @Bean
-//    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-//        RedisCacheConfiguration defaults = RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofSeconds(Long.parseLong(SESSION_MAX_INACTIVE_INTERVAL_IN_SECONDS)))
-//                .enableTimeToIdle();
-//        return RedisCacheManager.builder(connectionFactory)
-//                .cacheDefaults(defaults)
-//                .build();
-//    }
-//
-
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
@@ -42,3 +28,5 @@ public class RedisConfig extends AbstractHttpSessionApplicationInitializer {
         return template;
     }
 }
+
+

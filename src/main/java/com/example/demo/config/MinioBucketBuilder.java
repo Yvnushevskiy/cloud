@@ -13,14 +13,17 @@ import org.springframework.stereotype.Component;
 public class MinioBucketBuilder {
 
     private final MinioClient minioClient;
-    private final Environment environment;
+    private final Environment env;
+
+
+
 
     @PostConstruct
     public void minioBucketBuilder()  {
         try {
-            boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(environment.getProperty("MINIO_BUCKET_NAME")).build());
+            boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(env.getProperty("MINIO_BUCKET_NAME")).build());
             if (!found) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(environment.getProperty("MINIO_BUCKET_NAME")).build());
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(env.getProperty("MINIO_BUCKET_NAME")).build());
             }
         }
         catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.MinioConfig;
+import com.example.demo.model.FileObject;
 import com.example.demo.service.MinioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,16 +20,23 @@ public class MinioController {
 
 
     @GetMapping("/home")
-    public String addUser(Authentication authentication, Model model) {
-        model.addAttribute("username", authentication.getName());
+    public String addUser(Authentication authentication, Model model,@RequestParam(value="path",required = false) String path) {
+        String username = authentication.getName();
+        if(path == null){   //todo move it to service
+            path = "";
+        }
+        FileObject fObj = minioService.getFileObjectForUser(username,path);
+        model.addAttribute("username", username);
+        model.addAttribute("files", fObj.getFiles());
+        model.addAttribute("folders", fObj.getFolder());
         return "index";
     }
 
 
     @PostMapping("/upload")
-    public void uploadFile(Authentication authentication, Model model,@RequestParam("file") MultipartFile file){
-        model.addAttribute("username", authentication.getName());
-        minioService.uploadFile(file);
+    public String uploadFile(Authentication authentication, Model model,@RequestParam("file") MultipartFile file,@RequestParam(value="path",required = false) String path){
+        minioService.uploadFile(file,authentication.getName(),path);
+        return "index";
     }
 
 }

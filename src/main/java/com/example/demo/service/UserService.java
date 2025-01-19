@@ -2,22 +2,18 @@ package com.example.demo.service;
 
 import com.example.demo.model.AppUser;
 import com.example.demo.repository.UserRepository;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     public void addUser(String username, String password) {
         String encodedPassword = passwordEncoder.encode(password);
@@ -26,6 +22,4 @@ public class UserService {
         user.setPassword(encodedPassword);
         userRepository.save(user);
     }
-
-
 }
