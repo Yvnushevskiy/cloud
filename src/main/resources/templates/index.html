@@ -29,17 +29,20 @@
         .item span {
             font-size: 16px;
         }
+        .file-upload, .folder-create {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="home">cloud storage</a>
+        <a class="navbar-brand" href="/home">cloud storage</a>
         <div class="d-flex align-items-center">
             <span class="navbar-text me-3" th:text="${username}"></span>
             <form action ="/logout" method="post">
-            <button type = "submit" class="btn btn-outline-danger">Sign out</button>
+                <button type="submit" class="btn btn-outline-danger">Sign out</button>
             </form>
         </div>
     </div>
@@ -47,54 +50,78 @@
 
 <section id="page-content">
     <div class="container mt-4">
-        <div class="d-flex my-4">
+        <div class="mb-4">
             <form action ="/search" method="GET" class="d-flex w-100">
-            <div class="input-group location-search-input-group me-3">
-                <input class="form-control" type="text" name="name" placeholder="Enter filename" autocomplete="false">
-                <button class="btn btn-outline-secondary btn-sm clear-input-button" type="button"
-                        onclick="this.previousElementSibling.value=''">
-                    &times;
-                </button>
-            </div>
-
-            <button class="btn btn-outline-success">Search</button>
-            </form>
-            <div id="folders">
-                <h2>Folders</h2>
-                <div th:each="folder : ${folders}" class="item">
-                    <img src="folder-icon.png" alt="Folder Icon">
-                    <span th:text="${folder}"></span>
+                <div class="input-group location-search-input-group me-3">
+                    <input class="form-control" type="text" name="name" placeholder="Enter filename" autocomplete="false">
+                    <button class="btn btn-outline-secondary btn-sm clear-input-button" type="button"
+                            onclick="this.previousElementSibling.value=''">
+                        &times;
+                    </button>
                 </div>
-            </div>
-            <div id="files">
-                <h2>Files</h2>
-                <div th:each="file : ${files}" class="item">
-                    <img src="file-icon.png" alt="File Icon">
-                    <span th:text="${file}"></span>
+
+                <button class="btn btn-outline-success">Search</button>
+            </form>
+        </div>
+
+        <div id="folders" class="my-4">
+            <h2>Folders</h2>
+            <div th:each="folder : ${folders}" class="item">
+                <img src="folder-icon.png" alt="Folder Icon">
+                <span th:text="${folder}"></span>
+                <div class="buttons">
+<!--                    <a href="#" class="button open-button" data-folder="${folder}">Открыть</a>-->
+                    <button class="delete-button">Удалить</button>
+                    <button class="upload-button">Загрузить</button>
+                    <button class="rename-button">Переименовать</button>
                 </div>
             </div>
         </div>
+
+        <div id="files" class="my-4">
+            <h2>Files</h2>
+            <div th:each="file : ${files}" class="item">
+                <img src="file-icon.png" alt="File Icon">
+                <span th:text="${file}"></span>
+                <div class="buttons">
+                    <button class="delete-button">Удалить</button>
+                    <button class="upload-button">Загрузить</button>
+                    <button class="rename-button">Переименовать</button>
+                </div>
+            </div>
+        </div>
+
+
         <div class="file-upload my-4">
             <h5>Upload a File</h5>
-            <form action="/upload" method="POST" enctype="multipart/form-data" >
+            <form action="/upload" method="POST" enctype="multipart/form-data">
                 <div class="input-group">
                     <input class="form-control" type="file" id="file" name="file" required>
                 </div>
                 <button class="btn btn-outline-primary mt-2" type="submit">Upload</button>
             </form>
         </div>
+
         <div class="file-upload my-4">
             <h5>Upload a Folder</h5>
-            <form action="/error" method="POST" enctype="multipart/form-data">
+            <form action="/upload-folder" method="POST" enctype="multipart/form-data">
                 <div class="input-group">
-                    <input class="form-control" type="file" id="folder" name="folder" webkitdirectory  required>
+                    <input class="form-control" type="file" id="folder" name="files" webkitdirectory required>
                 </div>
                 <button class="btn btn-outline-primary mt-2">Upload</button>
             </form>
         </div>
 
+        <div class="folder-create my-4">
+            <h5>Create Folder</h5>
+            <form action="/create-folder" method="POST">
+                <div class="input-group">
+                    <input class="form-control" type="text" id="folderName" name="folderName" placeholder="Enter folder name" required>
+                </div>
+                <button class="btn btn-outline-primary mt-2">Create</button>
+            </form>
+        </div>
     </div>
-
 </section>
 
 <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-4 border-top">
@@ -102,6 +129,22 @@
         <span>© Cloud storage , project from <a href="https://zhukovsd.github.io/java-backend-learning-course/">zhukovsd/java-backend-learning-course</a> roadmap.</span>
     </div>
 </footer>
+
+
+<!--<script>-->
+<!--    document.addEventListener('DOMContentLoaded', () => {-->
+
+<!--        const currentPath = window.location.pathname.replace(/\/$/, '');-->
+
+
+<!--        document.querySelectorAll('.open-button').forEach(link => {-->
+<!--            const folder = link.getAttribute('data-folder');-->
+<!--            const newHref = `${currentPath}/${folder}`;-->
+<!--            link.setAttribute('href', newHref);-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
 
 </body>
 </html>

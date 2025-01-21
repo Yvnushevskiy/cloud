@@ -7,7 +7,7 @@ import java.io.InputStream;
 @Getter
 @Setter
 public class MinioFile {
-    //TODO ITS useless, doesnt used anywhere
+    //TODO This class is  useless, doesnt used anywhere
     InputStream inputStream;
     String fileName;
     String contentType;

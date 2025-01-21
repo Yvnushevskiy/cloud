@@ -2,14 +2,12 @@ package com.example.demo.repository;
 
 import io.minio.Result;
 import io.minio.messages.Item;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
-@Repository
+
 public interface MinioRepository {
-    void loadFile(MultipartFile file, String path);
-    void loadFolder();
-    void deleteFolder();
-    void deleteFile();
+    void uploadFile(MultipartFile file, String path);
+    void uploadMultipleFiles(MultipartFile[] files, String path);
+    void deleteObject(String path, String objectName);
     void createFolder(String path,String folderName);
     Iterable<Result<Item>> buildFileObjectByPath(String path);
 }

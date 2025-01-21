@@ -31,13 +31,18 @@ public class MinioService {
 
 
     public void uploadFile(MultipartFile file, String username,String path) {
-        minioRepository.loadFile(file,buildFullPath(username,path));
+        minioRepository.uploadFile(file,buildFullPath(username,path));
+    }
+
+    public void uploadFolder(MultipartFile[] files, String username,String path) {
+        minioRepository.uploadMultipleFiles(files,buildFullPath(username,path));
     }
 
     public FileObject getFileObjectForUser(String username,String path) {
         try {
-            Iterable<Result<Item>> results = minioRepository.buildFileObjectByPath(buildFullPath(username,path));
-            return mapperFromIterableToFileObj(results);
+            String fullPath = buildFullPath(username,path);
+            Iterable<Result<Item>> results = minioRepository.buildFileObjectByPath(fullPath);
+            return mapperFromIterableToFileObj(results,fullPath);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -76,14 +81,14 @@ public class MinioService {
 
     }
 
-    private FileObject mapperFromIterableToFileObj(Iterable<Result<Item>> list) throws Exception{
+    private FileObject mapperFromIterableToFileObj(Iterable<Result<Item>> list,String fullPath) throws Exception{
         FileObject fileObject = new FileObject();
         List<String> folders = new ArrayList<>();
         List<String> files = new ArrayList<>();
 
         for (Result<Item> item : list) {
             if (item.get().isDir()) {
-                folders.add(Util.cutPathFromFileName(item.get().objectName()));
+                folders.add(Util.getFolderNameFromPath(item.get().objectName(),fullPath));
             } else {
                 files.add(Util.cutPathFromFileName(item.get().objectName()));
             }
