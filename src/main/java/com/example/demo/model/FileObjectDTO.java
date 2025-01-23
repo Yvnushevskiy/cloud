@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FileObject {
+public class FileObjectDTO {
     private List<String> files;
     private List<String> folder;
 }

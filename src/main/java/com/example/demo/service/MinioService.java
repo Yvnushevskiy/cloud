@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.Util.Util;
-import com.example.demo.model.FileObject;
+import com.example.demo.Mapper.FileObjectDTOMapper;
+import com.example.demo.model.FileObjectDTO;
 import com.example.demo.repository.MinioRepository;
 import com.example.demo.repository.UserRepository;
 import io.minio.MinioClient;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.example.demo.util.Util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,78 +27,82 @@ public class MinioService {
     private final UserService userService;
 
     @Value("${MINIO_BUCKET_NAME}")
-    private  String minioBucketName;
+    private String minioBucketName;
 
 
-    public void uploadFile(MultipartFile file, String username,String path) {
-        minioRepository.uploadFile(file,buildFullPath(username,path));
+    public void uploadFile(MultipartFile file, String username, String path) {
+        minioRepository.uploadFile(file, buildFullPath(username, urlCutter(path)));
     }
 
-    public void uploadFolder(MultipartFile[] files, String username,String path) {
-        minioRepository.uploadMultipleFiles(files,buildFullPath(username,path));
+    public void uploadFolder(MultipartFile[] files, String username, String path) {
+        minioRepository.uploadMultipleFiles(files, buildFullPath(username, urlCutter(path)));
     }
 
-    public FileObject getFileObjectForUser(String username,String path) {
+    public FileObjectDTO getFileObjectForUser(String username, String path) {
         try {
-            String fullPath = buildFullPath(username,path);
+            String fullPath = buildFullPath(username, path);
             Iterable<Result<Item>> results = minioRepository.buildFileObjectByPath(fullPath);
-            return mapperFromIterableToFileObj(results,fullPath);
-
+            return FileObjectDTOMapper.map(results);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void createFolderOnPath(String path,String username,String folderName) {
-        minioRepository.createFolder(buildFullPath(username,path),folderName);
+    public void createFolder(String path, String username, String folderName) {
+        minioRepository.createFolder(buildFullPath(username, urlCutter(path)), folderName);
     }
 
+    public void deleteFile(String path) {
+        minioRepository.deleteObject(path);
+    }
 
-
-
-    private  String buildFullPath(String username, String path) {
+    public void deleteFolder(String path) {
         try {
-            if(path==null) {
-                path="";
+            Iterable<Result<Item>> results = minioRepository.buildFileObjectByPath(path,true);
+            for (Result<Item> item : results) {
+                deleteFile(item.get().objectName());
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void renameFile(String path, String newName) {
+        minioRepository.copyObject(path,path.replace(cutFileType(getNameFromPath(path)),newName));
+        minioRepository.deleteObject(path);
+    }
+
+    public void renameFolder(String path, String newName) {
+      try {
+          Iterable<Result<Item>> results = minioRepository.buildFileObjectByPath(path, true);
+          for (Result<Item> item : results) {
+              minioRepository.copyObject(item.get().objectName(),item.get().objectName().replace(getNameFromPath(path), newName));
+              minioRepository.deleteObject(item.get().objectName());
+          }
+      }catch (Exception e){
+          throw new RuntimeException(e);
+      }
+    }
+
+    private String buildFullPath(String username, String path) {
+        try {
             String userFolder = buildUserFolderNameWithFoundedID(username);
+            String decodedPath = URLDecoder.decode(path, "UTF-8");
+            String cutMainMageName = decodedPath.replaceFirst("^/[^/]+/", "").replaceFirst("^/[^/]+$", "");
 
-            return userFolder + "/" + URLDecoder.decode(path, "UTF-8");
+            if (!cutMainMageName.isEmpty()) {
+                cutMainMageName += "/";
+            }
 
-        }catch (Exception e){
-            throw new RuntimeException("cant decode"+ e);
+            return userFolder + "/" + cutMainMageName;
+
+        } catch (Exception e) {
+            throw new RuntimeException("cant decode" + e);
         }
     }
 
-    private  String buildUserFolderNameWithFoundedID(String username){
+    private String buildUserFolderNameWithFoundedID(String username) {
         return "user-" + userRepository.findIdByUsername(username).toString() + "-files";
     }
-
-    private String pathNameCutter(String fullPath, String userFolderName, String path) {
-        return fullPath
-                .replace(userFolderName+"/","")
-                .replace(path,"");
-
-    }
-
-    private FileObject mapperFromIterableToFileObj(Iterable<Result<Item>> list,String fullPath) throws Exception{
-        FileObject fileObject = new FileObject();
-        List<String> folders = new ArrayList<>();
-        List<String> files = new ArrayList<>();
-
-        for (Result<Item> item : list) {
-            if (item.get().isDir()) {
-                folders.add(Util.getFolderNameFromPath(item.get().objectName(),fullPath));
-            } else {
-                files.add(Util.cutPathFromFileName(item.get().objectName()));
-            }
-        }
-        fileObject.setFiles(files);
-        fileObject.setFolder(folders);
-
-        return fileObject;
-    }
-
 
 }
 
