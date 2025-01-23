@@ -23,11 +23,6 @@ public class MinioService {
     private final UserRepository userRepository;
     private final MinioRepository minioRepository;
 
-    private final MinioClient minioClient;
-    private final UserService userService;
-
-    @Value("${MINIO_BUCKET_NAME}")
-    private String minioBucketName;
 
 
     public void uploadFile(MultipartFile file, String username, String path) {
