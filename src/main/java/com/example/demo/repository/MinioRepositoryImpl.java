@@ -67,11 +67,11 @@ public class MinioRepositoryImpl implements MinioRepository {
 
     }
 
-    public Iterable<Result<Item>> buildFileObjectByPath(String path) {
-        return buildFileObjectByPath(path,false);
+    public Iterable<Result<Item>> findFilesByPath(String path) {
+        return findFilesByPath(path,false);
     }
 
-    public Iterable<Result<Item>> buildFileObjectByPath(String path, boolean recursive) {
+    public Iterable<Result<Item>> findFilesByPath(String path, boolean recursive) {
         return minioClient.listObjects(
                 ListObjectsArgs.builder()
                         .bucket(env.getProperty("MINIO_BUCKET_NAME"))
@@ -93,6 +93,19 @@ public class MinioRepositoryImpl implements MinioRepository {
                             .build()
             );
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void downloadObject(String path) {
+        try{
+            minioClient.downloadObject(
+                    DownloadObjectArgs.builder()
+                            .bucket(env.getProperty("MINIO_BUCKET_NAME"))
+                            .object(path)
+                            .build()
+            );
+        }catch (Exception e){
             throw new RuntimeException(e);
         }
     }

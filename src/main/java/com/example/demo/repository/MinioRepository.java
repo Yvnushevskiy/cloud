@@ -10,6 +10,7 @@ public interface MinioRepository {
     void deleteObject(String path);
     void createFolder(String path,String folderName);
     void copyObject(String path,String newPath);
-    Iterable<Result<Item>> buildFileObjectByPath(String path);
-    Iterable<Result<Item>> buildFileObjectByPath(String path,boolean recursive);
+    void downloadObject(String path);
+    Iterable<Result<Item>> findFilesByPath(String path);
+    Iterable<Result<Item>> findFilesByPath(String path, boolean recursive);
 }

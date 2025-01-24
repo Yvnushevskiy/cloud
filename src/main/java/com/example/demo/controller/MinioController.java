@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.*;
+
 @Controller
 @RequiredArgsConstructor
 public class MinioController {
@@ -20,7 +22,7 @@ public class MinioController {
 
     @GetMapping("/home/**")
     public String homePage(Authentication authentication, Model model, HttpServletRequest request) {
-        FileObjectDTO fObj = minioService.getFileObjectForUser(authentication.getName(),request.getRequestURI());
+        FileObjectDTO fObj = minioService.getFileObjectForPath(authentication.getName(),request.getRequestURI());
         model.addAttribute("username", authentication.getName());
         model.addAttribute("files", fObj.getFiles());
         model.addAttribute("folders", fObj.getFolder());
@@ -61,17 +63,36 @@ public class MinioController {
         return "redirect:/home";
     }
 
+    @PostMapping("/rename")
+    public String renameFile(HttpServletRequest request,@RequestParam("newName") String newName,@RequestParam("path") String path){
+        String previousUrl = request.getHeader("Referer");
+        minioService.renameFile(path,newName);
+        return "redirect:"+previousUrl;
+    }
     @PostMapping("/rename-folder")
     public String renameFolder(HttpServletRequest request,@RequestParam("newName") String newName,@RequestParam("path") String path){
         String previousUrl = request.getHeader("Referer");
         minioService.renameFolder(path,newName);
         return "redirect:"+previousUrl;
     }
-    @PostMapping("/rename-file")
-    public String renameFile(HttpServletRequest request,@RequestParam("newName") String newName,@RequestParam("path") String path){
-        String previousUrl = request.getHeader("Referer");
-        minioService.renameFile(path,newName);
-        return "redirect:"+previousUrl;
+
+    @GetMapping("/search")
+    public String searchedFile(Authentication authentication,@RequestParam("query") String query,Model model){
+        FileObjectDTO fObj = minioService.searchFilesByNameInUserFolder(authentication.getName(),query);
+        model.addAttribute("username", authentication.getName());
+        model.addAttribute("files", fObj.getFiles());
+        model.addAttribute("folders", fObj.getFolder());
+        return "search";
+    }
+    @PostMapping("/download")
+    public String downloadFile(String localPath, Model model, @RequestParam("path") String path){
+        minioService.downloadFile(path);
+        return "redirect:/home";
+    }
+    @PostMapping("/download-folder")
+    public String downloadFolder(String localPath,Model model,@RequestParam("path") String path){
+        minioService.downloadFolder(path);
+        return "redirect:/home";
     }
 }
 

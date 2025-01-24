@@ -13,6 +13,10 @@ public class LoginController {
 
     private final UserService userService;
 //todo VALIDATE!
+    @GetMapping("/")
+    public String index() {
+        return "redirect:/home";
+    }
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error",required = false)String error) {
         return error!=null ? "sign-in-with-errors":"sign-in";

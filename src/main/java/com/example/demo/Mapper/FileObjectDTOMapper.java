@@ -17,7 +17,7 @@ public class FileObjectDTOMapper {
             for (Result<Item> item : list) {
                 if (item.get().isDir()) {
                     folders.add(item.get().objectName());
-                } else if (!item.get().objectName().endsWith("/")) {
+                } else  {
                     files.add(item.get().objectName());
                 }
             }
